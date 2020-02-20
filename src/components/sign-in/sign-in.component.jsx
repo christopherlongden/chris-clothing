@@ -24,13 +24,10 @@ class SignIn extends React.Component {
 
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      this.setState({email: '', password: '' });
-    } catch(err) {
-      alert(err.message);
-      console.log(err);
+      this.setState({ email: '', password: '' });
+    } catch (error) {
+      console.log(error);
     }
-
-    this.setState({ email: '', password: '' });
   };
 
   handleChange = event => {
@@ -62,9 +59,11 @@ class SignIn extends React.Component {
             label='password'
             required
           />
-          <div className="buttons">
+          <div className='buttons'>
             <CustomButton type='submit'> Sign in </CustomButton>
-            <CustomButton onClick={signInWithGoogle} isGoogleSignIn>Sign in with Google</CustomButton>
+            <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
+              Sign in with Google
+            </CustomButton>
           </div>
         </form>
       </div>

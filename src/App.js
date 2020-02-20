@@ -14,22 +14,17 @@ import { setCurrentUser } from './redux/user/user.actions';
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
-  // this is a subscription, that's why it has to be umounted
-  // otherwise you will have memory leaks
   componentDidMount() {
     const { setCurrentUser } = this.props;
 
-    // gives us back a function that we can use to close the subscription
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
         userRef.onSnapshot(snapShot => {
           setCurrentUser({
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data()
-            }
+            id: snapShot.id,
+            ...snapShot.data()
           });
         });
       }
@@ -38,7 +33,6 @@ class App extends React.Component {
     });
   }
 
-  // This will close the subscription
   componentWillUnmount() {
     this.unsubscribeFromAuth();
   }
@@ -46,27 +40,36 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header/>
+        <Header />
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
-          <Route exact path='/signin' render={
-            () => this.props.currentUser ?  
-            (<Redirect to='/'/>) : 
-            (<SignInAndSignUpPage/>)} 
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              this.props.currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
           />
         </Switch>
       </div>
-    ); 
+    );
   }
 }
 
-const mapStateToProps = ({user}) => ({
+const mapStateToProps = ({ user }) => ({
   currentUser: user.currentUser
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
-})
+});
 
-export default  connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
