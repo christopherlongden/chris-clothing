@@ -24,12 +24,23 @@ export const fetchCollectionsStartAsync = () => {
     const collectionRef = firestore.collection('collections');
     dispatch(fetchCollectionsStart());
 
-    collectionRef
-      .get()
-      .then(snapshot => {
-        const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-        dispatch(fetchCollectionsSuccess(collectionsMap));
-      })
-      .catch(error => dispatch(fetchCollectionsFailure(error.message)));
+    // TODO: I removed the promise version and went back to snapshot
+    // which does not destroy the connection
+
+    // GO BACK TO SNAPSHOT MODEL - DOES THIS PRODUCE A PROBLEM BECAUSE
+    // WE ARE NOT DESTROYING THIS CONNECTION
+    collectionRef.onSnapshot(async snapshot => {
+      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+
+      dispatch(fetchCollectionsSuccess(collectionsMap));
+    })
+
+    // collectionRef
+    //   .get()
+    //   .then(snapshot => {
+    //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+    //     dispatch(fetchCollectionsSuccess(collectionsMap));
+    //   })
+    //   .catch(error => dispatch(fetchCollectionsFailure(error.message)));
   };
 };
